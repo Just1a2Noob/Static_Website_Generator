@@ -89,6 +89,9 @@ class testHTMLNode(unittest.TestCase):
         with self.assertRaises(ValueError) as context:
             node6.to_html()
         self.assertEqual(str(context.exception), "Children cannot be empty")
+    
+    def test_text_node_to_html_code(self):
+        node  
 
 
 

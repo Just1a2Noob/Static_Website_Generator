@@ -1,3 +1,5 @@
+from textnode import TextNode
+
 class HTMLNode:
     def __init__(self, tag=None, value=None, children=None, props=None):
        self.tag = tag 
@@ -59,4 +61,22 @@ class ParentNode(HTMLNode):
         return (f"<{self.tag}>{temp}</{self.tag}>")
 
 def text_node_to_html_node(text_node):
-    pass
+    if isinstance(text_node, TextNode):
+        if text_node.text_type() == "text":
+            return LeafNode(None, str(text_node.text))
+        
+        if text_node.text_type() == "bold":
+            return LeafNode("b", str(text_node.text))
+
+        if text_node.text_type() == "italic":
+            return LeafNode("i", str(text_node.text))
+
+        if text_node.text_type() == "code":
+            return LeafNode("code", str(text_node.text))
+
+        if text_node.text_type() == "link":
+            return LeafNode("a", str(text_node.text), {"href":text_node.url()})
+        
+        if text_node.text_type() == "image":
+            return f"<image src={node.url()} alt={self.text()}"
+    raise Exception()
