@@ -1,6 +1,7 @@
 import unittest
 
-from htmlnode import HTMLNode, LeafNode, ParentNode
+from htmlnode import HTMLNode, LeafNode, ParentNode, text_node_to_html_node
+from textnode import TextNode
 
 class testHTMLNode(unittest.TestCase):
     def test_props_to_html(self):
@@ -90,8 +91,30 @@ class testHTMLNode(unittest.TestCase):
             node6.to_html()
         self.assertEqual(str(context.exception), "Children cannot be empty")
     
-    def test_text_node_to_html_code(self):
-        node  
+    def test_text_node_to_html(self):
+        list_of_nodes = [
+            TextNode("Italic text", "italic"),
+            TextNode("Normal text", "text"),
+            TextNode("Bold text", "bold"),
+            TextNode("Some lines of code", "code"),
+            TextNode("Google", "link", "google.com"),
+            TextNode("Description of the image", "image", "url/of/image.jpg"),
+            TextNode("Lorem Ipsum", "ITALIC")
+        ]
+
+        list_of_nodes_answer = [ 
+            LeafNode("i", "Italic text"),
+            LeafNode(None, "Normal text"),
+            LeafNode("b", "Bold text"),
+            LeafNode("code", "Some lines of code"),
+            LeafNode("a", "Google", {"href":"google.com"}),
+            "<image src=url/of/image.jpg alt=Description of the image>",
+            LeafNode("i", "Lorem Ipsum")
+        ]
+
+        for i, j in zip(list_of_nodes, list_of_nodes_answer):
+            self.assertEqual(text_node_to_html_node(i), j)
+
 
 
 

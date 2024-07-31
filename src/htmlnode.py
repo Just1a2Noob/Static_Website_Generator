@@ -38,6 +38,18 @@ class LeafNode(HTMLNode):
                 return f"<{self.tag} {props_to_html}>{self.value}</{self.tag}>"
 
         return f"<{self.tag}>{self.value}</{self.tag}>"
+    
+    def __repr__(self):
+        if self.props != None:
+            return f"LeafNode({self.tag}, {self.value}, {self.props})"
+        else:
+            return f"LeafNode({self.tag}, {self.value})"
+    
+    def __eq__(self, other):
+        return (
+            self.tag == other.tag and 
+            self.value == other.value and 
+            self.props == other.props) 
 
 class ParentNode(HTMLNode):
     def __init__(self, tag=None, children=None, props=None):
@@ -61,22 +73,24 @@ class ParentNode(HTMLNode):
         return (f"<{self.tag}>{temp}</{self.tag}>")
 
 def text_node_to_html_node(text_node):
+    node_type = text_node.text_type.lower()
     if isinstance(text_node, TextNode):
-        if text_node.text_type() == "text":
-            return LeafNode(None, str(text_node.text))
+        if node_type == "text":
+            return LeafNode(None, text_node.text)
         
-        if text_node.text_type() == "bold":
-            return LeafNode("b", str(text_node.text))
+        if node_type == "bold":
+            return LeafNode("b", text_node.text)
 
-        if text_node.text_type() == "italic":
-            return LeafNode("i", str(text_node.text))
+        if node_type == "italic":
+            return LeafNode("i", text_node.text)
 
-        if text_node.text_type() == "code":
-            return LeafNode("code", str(text_node.text))
+        if node_type == "code":
+            return LeafNode("code", text_node.text)
 
-        if text_node.text_type() == "link":
-            return LeafNode("a", str(text_node.text), {"href":text_node.url()})
+        if node_type == "link":
+            return LeafNode("a", text_node.text, {"href":text_node.url})
         
-        if text_node.text_type() == "image":
-            return f"<image src={node.url()} alt={self.text()}"
+        if node_type == "image":
+            return f"<image src={text_node.url} alt={text_node.text}>"
     raise Exception()
+
