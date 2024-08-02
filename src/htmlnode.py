@@ -93,4 +93,3 @@ def text_node_to_html_node(text_node):
         if node_type == "image":
             return f"<image src={text_node.url} alt={text_node.text}>"
     raise Exception()
-
