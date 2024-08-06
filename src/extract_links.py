@@ -1,9 +1,11 @@
 import re
 from textnode import TextNode
 
-def extract_markdown_images(text):
+def extract_markdown_images(text, r_pattern=False):
     pattern = re.compile(r"!\[(.*?)\]+\((.*?)\)")
     match = pattern.findall(text)
+    if r_pattern == True:
+        return (match, r_pattern)
     return match
 
 def extract_markdown_links(text, r_pattern=False):
@@ -14,24 +16,47 @@ def extract_markdown_links(text, r_pattern=False):
     return match
 
 def split_nodes_image(old_nodes):
-    pass 
+    for node in old_nodes:
+        text = node.text 
+        m_pattern = extract_markdown_images(text, r_pattern=True)
+        pattern = m_pattern[1]
+        parts = pattern.split(text)
+
+
+        result = []
+        k = 0
+        for i, j in m_pattern[0]:
+            while k < len(parts):
+                if i in parts[k] and j in parts[k + 1]:
+                    result.append(TextNode(i, "text_type_link", j))
+                    if k < len(parts):
+                        k += 2
+                    break
+                result.append(TextNode(parts[k], "text_type_text"))
+                k += 1
+    return result
 
 def split_nodes_link(old_nodes):
     for node in old_nodes:
         text = node.text 
         m_pattern = extract_markdown_links(text, r_pattern=True)
-    
-    parts = pattern.split(text)
-    result = []
-    for part in parts:
-        for i, j in find_all:
-            if i in part:
-                print(f"{part} is in here")
-                break
-            else:
-                print(part)
-                break
-        pass
+        pattern = m_pattern[1]
+        parts = pattern.split(text)
+
+
+        result = []
+        k = 0
+        for i, j in m_pattern[0]:
+            while k < len(parts):
+                if i in parts[k] and j in parts[k + 1]:
+                    result.append(TextNode(i, "text_type_link", j))
+                    if k < len(parts):
+                        k += 2
+                    break
+                result.append(TextNode(parts[k], "text_type_text"))
+                k += 1
+
+    return result
 
 
 
@@ -40,6 +65,7 @@ node = TextNode(
     "text_type_text"
 )
 new_nodes = split_nodes_link([node])
+print(new_nodes)
 # [
 #     TextNode("This is text with a link ", text_type_text),
 #     TextNode("to boot dev", text_type_link, "https://www.boot.dev"),
@@ -49,9 +75,3 @@ new_nodes = split_nodes_link([node])
 #     ),
 # ]
 text =  "This is text with a link [to boot dev](https://www.boot.dev) and [to youtube](https://www.youtube.com/@bootdotdev)"
-
-pattern = re.compile(r"\[(.*?)\]+\((.*?)\)")
-find_all = pattern.findall(text)
-parts = pattern.split(text)
-list_parts = [part for part in parts if part]
-print(list_parts)
