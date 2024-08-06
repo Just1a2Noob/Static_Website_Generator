@@ -15,8 +15,9 @@ def split_nodes_delimiter(old_nodes, delimiter, text_type):
 
         # Error checker 
         delimiter_count = text.count(delimiter)
-        if delimiter_count % 2 != 0:
-            raise ValueError("Unmatched delimiter found. Make sure each opening delimiter has a corresponding closing delimiter")
+        if delimiter_count != 0:
+            if delimiter_count % 2 != 0:
+                raise ValueError("Unmatched delimiter found. Make sure each opening delimiter has a corresponding closing delimiter")
         
         for i, part in enumerate(parts):
             if i % 2 == 0:
